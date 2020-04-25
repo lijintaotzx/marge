@@ -13,7 +13,18 @@ cache = caches['service']
 
 
 class SmsService(APIView):
+    def get(self, request):
+        """获取验证码过期时间"""
+        s = SendSmsSerializer(data=request.data)
+        if s.is_valid():
+            pn = s.data['pn']
+            ttl = cache.ttl('{}_v_code'.format(pn))
+            return Response({'ttl': ttl}, status=status.HTTP_200_OK)
+
+        return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def post(self, request):
+        """向手机发送验证码"""
         s = SendSmsSerializer(data=request.data)
         if s.is_valid():
             pn = s.data['pn']
@@ -22,7 +33,7 @@ class SmsService(APIView):
             send_status, msg = yunpian.send_sms(pn, code)
             if send_status:
                 cache.set('{}_v_code'.format(pn), code, settings.VCODE_EXPIRATION_INTEVAL)
-                return Response('发送成功！', status=status.HTTP_200_OK)
+                return Response({'msg': '发送成功！'}, status=status.HTTP_200_OK)
             else:
                 return Response('发送失败！msg:{}'.format(msg), status=status.HTTP_400_BAD_REQUEST)
 
