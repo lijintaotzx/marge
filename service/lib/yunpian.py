@@ -31,6 +31,4 @@ class YunPian:
         # response = requests.post(self.single_send_url, data=params)
         # re_dict = json.loads(response.text)
         # return re_dict
-        print(222222222222222)
-        print(mobile)
         return True, '发送成功'
