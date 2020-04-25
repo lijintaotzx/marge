@@ -13,7 +13,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='userprofile')
     pn = models.CharField('手机号', max_length=32)
     birthday = models.DateField('生日', auto_now=True)
-    age = models.IntegerField('年龄')
+    age = models.IntegerField('年龄', default=0)
     sex = models.IntegerField('性别', default=1, choices=SEX_CHOICE)
 
     def __str__(self):
